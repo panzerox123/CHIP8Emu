@@ -1,2 +1,2 @@
-CC=gcc
+CC=g++
 CFLAGS=-lSDL2
