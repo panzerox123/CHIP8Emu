@@ -9,12 +9,14 @@ class GUI {
     SDL_Window * window;
     int width;
     int height;
+    int pixels_x;
+    int pixels_y;
     int * display;
     SDL_Renderer * renderer;
     SDL_Event event;
 
     public:
-    GUI(int,int);
+    GUI(int,int, int, int);
     void init();
     void draw_point(int, int);
     void clear_screen();
