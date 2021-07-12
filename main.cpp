@@ -3,6 +3,6 @@
 
 int main(){
     GUI a = GUI(800, 600, 64, 32);
-    a.init();
+    a.loop();
     return 0;
 }

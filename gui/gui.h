@@ -17,7 +17,7 @@ class GUI {
 
     public:
     GUI(int,int, int, int);
-    void init();
+    void loop();
     void draw_point(int, int);
     void clear_screen();
     void render();
