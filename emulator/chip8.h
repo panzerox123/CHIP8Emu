@@ -16,10 +16,12 @@ class CHIP8
   uint8 V_reg[16], timer_reg, sound_reg, sp_reg;
   uint16 I_reg, pc_reg, stack[16];
   LOG logger;
-  GUI gui;
+  GUI * gui;
 
 public:
-  void decodeInstructions(uint16);
+  CHIP8();
+  void decode_instructions(uint16);
+  void load_ROM(const char *);
 
 };
 

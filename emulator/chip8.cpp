@@ -1,6 +1,11 @@
 #include "chip8.h"
+#include <stdlib.h>
 
-void CHIP8::decodeInstructions(uint16 opcode)
+CHIP8::CHIP8(){
+    this->gui = new GUI(800,600,64,32);
+}
+
+void CHIP8::decode_instructions(uint16 opcode)
 {
     char * str;
     uint16 addr;
@@ -13,7 +18,7 @@ void CHIP8::decodeInstructions(uint16 opcode)
     {
 
     case 0x0000:
-        switch (opcode)
+        switch (opcode & 0x00FF)
         {
         case 0x00E0:
             // Clear the display
@@ -235,5 +240,17 @@ void CHIP8::decodeInstructions(uint16 opcode)
             logger.log_opcode(opcode, str);
             break;
         }
+    }
+}
+
+
+void CHIP8::load_ROM(const char * filename){
+    FILE * rom = fopen(filename, "rb");
+    fseek(rom, 0, SEEK_END);
+    uint64 cursor = ftell(rom);
+    uint16 buffer[cursor/2];
+    fread(rom, sizeof(uint16), cursor, rom);
+    for (int i = 0 ; i < cursor/2; i++){
+        printf("%x\n", buffer[i]);
     }
 }
