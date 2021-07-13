@@ -1,5 +1,8 @@
 # CHIP-8 Emulator
-**Written in C++ and using the SDL2 library.**
+**Written in C++ and uses the SDL2 library.**
+
+## What is CHIP-8?
+CHIP-8 is an interpreted programming language that runs in the form of a virtual machine. What I'm attempting to do, is to create an interpreter, or emulator of sorts since the machine has it's own opcodes, registers, memory structure etc.
 
 ## Build instructions
 ### Dependencies
@@ -17,7 +20,13 @@ $ cmake ../
 ```
 #### Build debug version
 ```
-$ cmake --build /home/kunal/Development/CHIP8Emu/build --config Debug --target all
+$ cmake --build ./build --config Debug --target all
 ```
 
-### Running
+### Running the app 
+```
+$ ./build/CHIP8Emu
+```
+
+## Contributing
+*Will be added soon*
