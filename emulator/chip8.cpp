@@ -1,13 +1,39 @@
 #include "chip8.h"
-#include <stdlib.h>
 
-CHIP8::CHIP8(){
-    this->gui = new GUI(800,600,64,32);
+void gui_thread_wrapper(GUI * gui){
+    gui->loop();
+}
+
+CHIP8::CHIP8()
+{
+    this->gui = new GUI(800, 600, 64, 32);
+    this->memory = (uint8 *)calloc(MEM_SIZE, sizeof(uint8));
+    this->V_reg = (uint8 *)calloc(NUM_V_REGS, sizeof(uint8));
+    this->stack = (uint16 *)calloc(STACK_SIZE, sizeof(uint16));
+    std::thread test(gui_thread_wrapper, this->gui);
+    for (int i = 0; i < MEM_SIZE; i++)
+    {
+        this->memory[i] = 0;
+    }
+    for (int i = 0; i < STACK_SIZE; i++)
+    {
+        this->stack[i] = 0;
+    }
+    for (int i = 0; i < NUM_V_REGS; i++)
+    {
+        this->V_reg[i] = 0;
+    }
+    this->pc_reg = 0;
+    this->timer_reg = 0;
+    this->sound_reg = 0;
+    this->sp_reg = 0;
+    this->gui->display[100] = 1;
+    test.join();
 }
 
 void CHIP8::decode_instructions(uint16 opcode)
 {
-    char * str;
+    char *str;
     uint16 addr;
     uint8 vreg;
     uint8 vreg_1;
@@ -224,7 +250,6 @@ void CHIP8::decode_instructions(uint16 opcode)
             logger.log_opcode(opcode, str);
             break;
 
-
         // INCOMPLETE / NOT UNDERSTOOD FULLY
         case 0x0033:
             // Store BCD representation of Vx in memory locations I, I+1, I+2
@@ -243,14 +268,19 @@ void CHIP8::decode_instructions(uint16 opcode)
     }
 }
 
-
-void CHIP8::load_ROM(const char * filename){
-    FILE * rom = fopen(filename, "rb");
-    fseek(rom, 0, SEEK_END);
-    uint64 cursor = ftell(rom);
-    uint16 buffer[cursor/2];
-    fread(rom, sizeof(uint16), cursor, rom);
-    for (int i = 0 ; i < cursor/2; i++){
-        printf("%x\n", buffer[i]);
+void CHIP8::load_ROM(const char *filename)
+{
+    uint8 rom[MEM_SIZE - 512] = {0};
+    std::ifstream rom_fd(filename, std::ios::binary);
+    if (!rom_fd)
+    {
+        perror("ERROR: Could not read ROM file");
+        return;
+    }
+    rom_fd.read((char *)rom, MEM_SIZE - 512);
+    rom_fd.close();
+    for (int i = 0; i < (MEM_SIZE - 512); i++)
+    {
+        this->memory[i + 512] = rom[i];
     }
 }

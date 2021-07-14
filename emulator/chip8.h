@@ -4,17 +4,25 @@
 #include "log.h"
 #include <stdio.h>
 #include "../gui/gui.h"
-
+#include <fstream>
+#include <stdlib.h>
+#include <thread> 
 /*
  * Reference documentation
  * http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
  */
 
+#define MEM_SIZE 4096
+#define STACK_SIZE 16
+#define NUM_V_REGS 16
+
 class CHIP8
 {
-  uint8 memory[4096] {0};
-  uint8 V_reg[16], timer_reg, sound_reg, sp_reg;
-  uint16 I_reg, pc_reg, stack[16];
+  uint8 * memory;
+  uint8 * V_reg; 
+  uint8 timer_reg, sound_reg, sp_reg;
+  uint16 I_reg, pc_reg;
+  uint16 * stack;
   LOG logger;
   GUI * gui;
 
@@ -24,5 +32,7 @@ public:
   void load_ROM(const char *);
 
 };
+
+void gui_thread_wrapper(GUI *);
 
 #endif

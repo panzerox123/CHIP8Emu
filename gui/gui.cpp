@@ -21,12 +21,7 @@ void GUI::loop()
     int i = 0;
     while (1)
     {
-        this->display[i] = 1;
         render();
-        if (i < (pixels_x * pixels_y)-1)
-        {
-            this->display[i++] = 0;
-        }
         while (SDL_PollEvent(&(this->event)))
         {
             switch (this->event.type)
