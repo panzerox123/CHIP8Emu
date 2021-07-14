@@ -4,6 +4,6 @@
 int main()
 {
     CHIP8 x;
-    x.load_ROM("roms/maze.ch8");
+    x.init("roms/maze.ch8");
     return 0;
 }

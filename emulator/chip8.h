@@ -30,6 +30,7 @@ public:
   CHIP8();
   void decode_instructions(uint16);
   void load_ROM(const char *);
+  void init(const char *);
 
 };
 

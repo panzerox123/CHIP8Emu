@@ -10,7 +10,6 @@ CHIP8::CHIP8()
     this->memory = (uint8 *)calloc(MEM_SIZE, sizeof(uint8));
     this->V_reg = (uint8 *)calloc(NUM_V_REGS, sizeof(uint8));
     this->stack = (uint16 *)calloc(STACK_SIZE, sizeof(uint16));
-    std::thread test(gui_thread_wrapper, this->gui);
     for (int i = 0; i < MEM_SIZE; i++)
     {
         this->memory[i] = 0;
@@ -23,17 +22,27 @@ CHIP8::CHIP8()
     {
         this->V_reg[i] = 0;
     }
-    this->pc_reg = 0;
+    this->pc_reg = 512;
     this->timer_reg = 0;
     this->sound_reg = 0;
     this->sp_reg = 0;
     this->gui->display[100] = 1;
-    test.join();
+}
+
+void CHIP8::init(const char * rom_file){
+    std::thread gui_thread(gui_thread_wrapper, this->gui);
+    load_ROM(rom_file);
+    while(this->pc_reg < MEM_SIZE-2){
+        uint16 opcode = memory[this->pc_reg] << 8 | memory[this->pc_reg+1];
+        decode_instructions(opcode);
+        this->pc_reg+=2; 
+    }
+    gui_thread.join();
 }
 
 void CHIP8::decode_instructions(uint16 opcode)
 {
-    char *str;
+    char str[100];
     uint16 addr;
     uint8 vreg;
     uint8 vreg_1;
