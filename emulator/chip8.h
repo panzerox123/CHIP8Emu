@@ -31,7 +31,7 @@ public:
   void decode_instructions(uint16);
   void load_ROM(const char *);
   void init(const char *);
-
+  void initialise_sprites();
 };
 
 void gui_thread_wrapper(GUI *);
