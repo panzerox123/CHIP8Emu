@@ -10,12 +10,12 @@ private:
     SDL_Window *window;
     int width;
     int height;
-    int pixels_x;
-    int pixels_y;
     SDL_Renderer *renderer;
     SDL_Event event;
 
 public:
+    int pixels_x;
+    int pixels_y;
     int *display;
     GUI(int, int, int, int);
     void loop();

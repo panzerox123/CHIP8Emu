@@ -4,6 +4,6 @@
 int main()
 {
     CHIP8 x;
-    x.init("roms/maze.ch8");
+    x.init("roms/Cave.ch8");
     return 0;
 }

@@ -29,7 +29,6 @@ CHIP8::CHIP8()
     this->timer_reg = 0;
     this->sound_reg = 0;
     this->sp_reg = 0;
-    this->gui->display[100] = 1;
 }
 
 void CHIP8::initialise_sprites()
@@ -65,7 +64,14 @@ void CHIP8::init(const char *rom_file)
     while (this->pc_reg < MEM_SIZE - 2)
     {
         uint16 opcode = memory[this->pc_reg] << 8 | memory[this->pc_reg + 1];
-        decode_instructions(opcode);
+        if (gui_thread.joinable())
+        {
+            decode_instructions(opcode);
+        }
+        if (opcode == 0)
+        {
+            break;
+        }
     }
     gui_thread.join();
 }
@@ -283,7 +289,7 @@ void CHIP8::decode_instructions(uint16 opcode)
         byte = opcode & 0x00FF;        // kk
         sprintf(str, "Random : vreg %x : RND & %x", vreg, byte);
         logger.log_opcode(opcode, str);
-        this->V_reg[vreg] = rand()%256 & byte;
+        this->V_reg[vreg] = rand() % 256 & byte;
         break;
     case 0xD000:
         // Display n-byte sprite starting at memory location stored in I register at point (Vx, Vy);
@@ -293,6 +299,26 @@ void CHIP8::decode_instructions(uint16 opcode)
         nibble = (opcode & 0x000F);
         sprintf(str, "Draw : nibble(%x) at point(%x, %x)", nibble, vreg_1, vreg_2);
         logger.log_opcode(opcode, str);
+        for (int i = 0; i < nibble; i++)
+        {
+            int sprite = this->memory[this->I_reg + i];
+            for (int j = 7; j >= 0; j--)
+            {
+                int pos = this->V_reg[vreg_1] + i + this->gui->pixels_y * (j + this->V_reg[vreg_2]);
+                if (this->gui->display[pos] == 1)
+                    this->V_reg[0xF] = 1;
+                switch ((sprite & 1))
+                {
+                case 0:
+                    this->gui->display[pos] = 0;
+                    break;
+                case 1:
+                    this->gui->display[pos] = 1;
+                    break;
+                }
+                sprite = sprite >> 1;
+            }
+        }
         break;
     case 0xE000:
         vreg = (opcode & 0x0F00) >> 8; // x
