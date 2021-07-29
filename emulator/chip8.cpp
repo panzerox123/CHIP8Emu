@@ -304,7 +304,7 @@ void CHIP8::decode_instructions(uint16 opcode)
             int sprite = this->memory[this->I_reg + i];
             for (int j = 7; j >= 0; j--)
             {
-                int pos = this->V_reg[vreg_1] + i + this->gui->pixels_y * (j + this->V_reg[vreg_2]);
+                int pos = this->V_reg[vreg_1] + i + this->gui->pixels_x * (j + this->V_reg[vreg_2]);
                 if (this->gui->display[pos] == 1)
                     this->V_reg[0xF] = 1;
                 switch ((sprite & 1))
